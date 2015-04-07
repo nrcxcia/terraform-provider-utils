@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/rand"
 	"github.com/hashicorp/terraform/helper/schema"
+	"strings"
 	"text/template"
 	"github.com/hashicorp/terraform/terraform"
 )
@@ -42,14 +43,18 @@ func templateResource() *schema.Resource {
 	}
 }
 
-
 func TemplateCreateUpdate(d *schema.ResourceData, meta interface{}) error {
 	d.SetId(fmt.Sprintf("%d", rand.Int()))
 
 	template_source := d.Get("template").(string)
 	vars := d.Get("vars").(map[string]interface{})
 
-	if tmpl, err := template.New(d.Id()).Parse(template_source); err != nil {
+	tmpl := template.New(d.Id())
+	tmpl.Funcs(template.FuncMap{
+		"add": addFunc,
+		"split": strings.Split,
+	})
+	if tmpl, err := tmpl.Parse(template_source); err != nil {
 		return err
 	} else {
 		var buf bytes.Buffer
@@ -62,11 +67,16 @@ func TemplateCreateUpdate(d *schema.ResourceData, meta interface{}) error {
 	return nil
 }
 
-func TemplateRead(d *schema.ResourceData, meta interface{}) error {
-	d.Set("out", "from read!")
-	return nil
-}
 func TemplateDelete(d *schema.ResourceData, meta interface{}) error {
 	d.SetId("")
 	return nil
+}
+
+
+func addFunc(values ...int) int {
+	ret := 0
+	for _, value := range values {
+		ret += value
+	}
+	return ret
 }
