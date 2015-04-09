@@ -17,6 +17,10 @@ from within terraform.
         }
     }
 
+and then elsewhere:
+
+    "${utils_template.zk_discovery_yaml.out}"
+
 ## Further uses
 
 Combine this with [terraform-provider-gitfile](https://github.com/Yelp/terraform-provider-gitfile)
