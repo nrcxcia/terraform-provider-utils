@@ -3,11 +3,11 @@ package utils
 import (
 	"bytes"
 	"fmt"
-	"math/rand"
 	"github.com/hashicorp/terraform/helper/schema"
+	"github.com/hashicorp/terraform/terraform"
+	"math/rand"
 	"strings"
 	"text/template"
-	"github.com/hashicorp/terraform/terraform"
 )
 
 func Provider() terraform.ResourceProvider {
@@ -22,22 +22,22 @@ func Provider() terraform.ResourceProvider {
 
 func templateResource() *schema.Resource {
 	return &schema.Resource{
-		Schema: map[string]*schema.Schema {
-			"template": &schema.Schema {
-				Type: schema.TypeString,
+		Schema: map[string]*schema.Schema{
+			"template": &schema.Schema{
+				Type:     schema.TypeString,
 				Required: true,
 			},
-			"vars": &schema.Schema {
-				Type: schema.TypeMap,
+			"vars": &schema.Schema{
+				Type:     schema.TypeMap,
 				Required: true,
 			},
-			"out": &schema.Schema {
-				Type: schema.TypeString,
+			"out": &schema.Schema{
+				Type:     schema.TypeString,
 				Computed: true,
 			},
 		},
 		Create: TemplateCreateUpdate,
-		Read: TemplateCreateUpdate,
+		Read:   TemplateCreateUpdate,
 		Update: TemplateCreateUpdate,
 		Delete: TemplateDelete,
 	}
@@ -51,7 +51,7 @@ func TemplateCreateUpdate(d *schema.ResourceData, meta interface{}) error {
 
 	tmpl := template.New(d.Id())
 	tmpl.Funcs(template.FuncMap{
-		"add": addFunc,
+		"add":   addFunc,
 		"split": strings.Split,
 	})
 	if tmpl, err := tmpl.Parse(template_source); err != nil {
@@ -71,7 +71,6 @@ func TemplateDelete(d *schema.ResourceData, meta interface{}) error {
 	d.SetId("")
 	return nil
 }
-
 
 func addFunc(values ...int) int {
 	ret := 0
