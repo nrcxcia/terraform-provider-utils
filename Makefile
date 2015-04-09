@@ -1,10 +1,12 @@
 .PHONY: all fmt clean package test itest_%
 
-all: fmt test
+all: fmt test terraform-provider-utils
+
+terraform-provider-utils:
+	go build
 
 fmt:
-	go fmt terraform-provider-utils/utils
-	go fmt terraform-provider-utils
+	go fmt ./...
 
 clean:
 	make -C yelppack clean
@@ -15,5 +17,4 @@ itest_%:
 package: itest_lucid
 
 test:
-	go test terraform-provider-utils/utils
-	go test terraform-provider-utils
+	go test -v ./utils/...
