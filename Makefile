@@ -1,4 +1,4 @@
-.PHONY: all fmt clean package test itest_%
+.PHONY: all fmt clean package test itest_% integration .git/hooks/pre-commit
 
 all: fmt .git/hooks/pre-commit test terraform-provider-utils
 
