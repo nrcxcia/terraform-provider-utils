@@ -1,5 +1,7 @@
 # terraform-provider-utils
 
+[![Build Status](https://travis-ci.org/Yelp/terraform-provider-utils.svg?branch=master)](https://travis-ci.org/Yelp/terraform-provider-utils)
+
 A [Terraform](http://terraform.io) plugin to allow you to do custom templating
 (using the Go [text/template](http://golang.org/pkg/text/template/) library
 in Terraform.
