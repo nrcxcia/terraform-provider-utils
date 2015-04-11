@@ -1,13 +1,23 @@
-.PHONY: all fmt clean package test itest_%
+.PHONY: all fmt .git/hooks/pre-commit terraform-provider-utils clean package test itest_%
 
-all: fmt test
+all: fmt .git/hooks/pre-commit test terraform-provider-utils
 
 fmt:
-	go fmt terraform-provider-utils/utils
-	go fmt terraform-provider-utils
+	go fmt ./...
 
 clean:
 	make -C yelppack clean
+	rm -f terraform-provider-utils
+	rm -rf test/example.git test/checkout test/terraform.tfstate.backup test/terraform.tfstate
+
+terraform-provider-utils: test
+	go build
+
+dev: terraform-provider-utils
+	cp terraform-provider-utils $$(echo $$GOPATH|sed -e's/://')/bin
+
+integration: dev
+	make -C test
 
 itest_%:
 	make -C yelppack $@
@@ -15,5 +25,8 @@ itest_%:
 package: itest_lucid
 
 test:
-	go test terraform-provider-utils/utils
-	go test terraform-provider-utils
+	go test -v ./utils/...
+
+.git/hooks/pre-commit:
+	if [ ! -f .git/hooks/pre-commit ]; then ln -s ../../git-hooks/pre-commit .git/hooks/pre-commit; fi
+

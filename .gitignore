@@ -1,2 +1,4 @@
 dist
+terraform.tfstate
 terraform.tfstate.backup
+terraform-provider-utils
